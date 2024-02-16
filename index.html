@@ -19,6 +19,7 @@
       <a class="navbar-brand">Task list</a>
       <form class="form-inline">
         <select class="form-control form-control-sm" id="themeSelect">
+          <option selected disabled hidden>--Choosing a theme--</option>
           <option value="default">Theme Default</option>
           <option value="light">Theme Light</option>
           <option value="dark">Theme Dark</option>
@@ -59,10 +60,10 @@
     </div>
     <div class="button-list-section mt-5">
       <div class="container d-flex tasks-btn justify-content-center">
-        <button class="btn btn-info new act">New tasks</button>
+        <button class="btn btn-info new">New tasks</button>
         <button class="btn btn-info compl">Completed tasks</button>
         <button class="btn btn-info del">Deleted tasks</button>
-        <button class="btn btn-info all">All tasks</button>
+        <button class="btn btn-info all act">All tasks</button>
       </div>
     </div>
     <div class="tasks-list-section mt-5">
