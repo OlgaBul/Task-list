@@ -2,43 +2,17 @@
 // Список задач
 const tasks = [
   {
-    _id: '5d2ca9e2e03d40b326596aa7',
-    completed: false,
-    deleted: false,
-    body:
-      'Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n',
-    title: 'Eu ea incididunt sunt consectetur fugiat non.',
-  },
-  {
-    _id: '5d2ca9e29c8a94095c1288e0',
-    completed: false,
-    deleted: false,
-    body:
-      'Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n',
-    title:
-      'Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.',
-  },
-  // {
-  //   _id: '5d2ca9e2e03d40b3232496aa7',
-  //   completed: false,
-  //   deleted: false,
-  //   body:
-  //     'Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n',
-  //   title: 'Eu ea incididunt sunt consectetur fugiat non.',
-  // },
-  // {
-  //   _id: '5d2ca9e29c8a94095564788e0',
-  //   completed: false,
-  //   deleted: false,
-  //   body:
-  //     'Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n',
-  //   title:
-  //     'Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.',
-  // },
+   _id: '5d2ca9e2e03d40b326596av7',
+   completed: false,
+   deleted: false,
+   body:
+     'Проверить работу приложения',
+   title: 'Проверка',
+ },
 ];
 
 (function(arrOfTasks) {
-  const objOfTasks = arrOfTasks.reduce((acc, task) => {
+  let objOfTasks = arrOfTasks.reduce((acc, task) => {
     acc[task._id] = task;
     return acc;
   }, {});
@@ -144,7 +118,12 @@ const tasks = [
       '--input-focus-box-shadow': '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
     },
   };
-  let lastSelectedTheme = 'default';
+  
+  let lastSelectedTheme = localStorage.getItem('app_theme') || 'default';
+  let objOfTasksFromLS = localStorage.getItem('Tasks') || JSON.stringify(objOfTasks);
+  if (objOfTasksFromLS) {
+    objOfTasks = JSON.parse(objOfTasksFromLS)
+  }
 
   // Элементы
   const listContainer = document.querySelector(
@@ -179,10 +158,8 @@ const tasks = [
         acc[task._id] = task;
         return acc;
       }, {});
-      console.log('listDel', listDel);
       renderTasks(listDel)  
     } else if (e.target.classList.contains('compl')) {
-      console.log('list of complete');
       e.target.classList.add('act')
       listContainer.innerHTML = ''
       type = 'compl'
@@ -191,10 +168,8 @@ const tasks = [
         acc[task._id] = task;
         return acc;
       }, {});
-      console.log('listCompl', listCompl);
       renderTasks(listCompl)
     } else if (e.target.classList.contains('new')) {
-      console.log('list of new');
       e.target.classList.add('act')
       listContainer.innerHTML = ''
       type = 'new'
@@ -203,16 +178,12 @@ const tasks = [
         acc[task._id] = task;
         return acc;
       }, {});
-      console.log('listCompl', listNew);
       renderTasks(listNew)
     } else if (e.target.classList.contains('all')) {
-      console.log('list of all');
       e.target.classList.add('act')
       listContainer.innerHTML = ''
       type = 'all'
       renderTasks(objOfTasks)
-      console.log('objOfTasks', objOfTasks);
-      console.log('arr:', Object.values(objOfTasks));
     }
   })
 
@@ -223,7 +194,8 @@ const tasks = [
   const themeSelect = document.getElementById('themeSelect');
 
   // События
-  renderTasks(objOfTasks);
+  setTheme(lastSelectedTheme)
+  renderTasks(JSON.parse(objOfTasksFromLS));
   form.addEventListener('submit', onFormSubmitHandler);
   listContainer.addEventListener('click', onDeletehandler);
   listContainer.addEventListener('click', onCompletehandler);
@@ -233,8 +205,6 @@ const tasks = [
 
   /// создать другой фрагмент
   function renderTasks(list) {
-    console.log('type:', type);
-
     if (JSON.stringify(list).length < 3) {
       const text = document.createElement('p')
       if (type === 'compl') {
@@ -252,10 +222,8 @@ const tasks = [
       }
       text.classList.add('alert', 'alert-primary', 'd-flex', 'align-items-center', 'justify-content-center', 'text')
       listContainer.appendChild(text)
-      console.log('listContainer:', listContainer);
       return;
     }
-    console.log('list', list);
     const fragment = document.createDocumentFragment();
     Object.values(list).forEach(task => {
       const li = listItemTemplate(task);
@@ -330,10 +298,7 @@ const tasks = [
         btn.classList.add('btn', 'btn-secondary', 'return-btn')
         li.appendChild(btn);
       }
-    }
-
-    
-
+    }    
     return li;
   }
 
@@ -363,7 +328,7 @@ const tasks = [
     } else if (type === 'compl') {
       btnCompl.click()
     }
-
+    localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
     form.reset(); 
   }
 
@@ -379,12 +344,10 @@ const tasks = [
 
     objOfTasks[newTask._id] = newTask;
     
-    
-    if (listContainer.lastChild === document.querySelector('.text')) { 
+    if (listContainer.lastChild === document.querySelector('.text')) {    // delete no task
       listContainer.lastChild.remove()
     }
-    console.log('listContainer', listContainer)
-
+    
     return { ...newTask };
   }
 
@@ -407,13 +370,12 @@ function checkQuantityTasks() {
     const isConfirm = confirm(`Вы уверены, что хотите удалить задачу "${title}"`);
     if (!isConfirm) return isConfirm;
     objOfTasks[id].deleted = true;
-    console.log('objOfTasks:', objOfTasks[id]);
+    localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
     checkQuantityTasks()
     return isConfirm;
   }
 
   function deleteTaskFromHtml(confirmed, el) {
-    console.log(confirmed, el)
     if (!confirmed) return;
     const btn = document.createElement('button')
     btn.textContent = 'Return task'
@@ -421,7 +383,7 @@ function checkQuantityTasks() {
     el.children[3].insertAdjacentElement('afterEnd', btn)
     el.children[1].setAttribute('disabled', 'disabled')                       // кнопка удаления задачи не активна
     el.children[el.children.length - 2].setAttribute('disabled', 'disabled')  // кнопка выполнения задачи не активна
-    console.log(el.children[el.children.length - 1]);
+    localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
     if (type === 'new' || type === 'compl') {
       el.remove()
       checkQuantityTasks() 
@@ -443,6 +405,7 @@ function returnTask(id) {
   const isConfirm = confirm(`Вы уверены, что хотите восстановить задачу "${title}"?`);
   if (!isConfirm) return isConfirm;
   objOfTasks[id].deleted = false;
+  localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
   return isConfirm;
 }
 
@@ -451,9 +414,9 @@ function returnTaskFromHtml(restored, el) {
   el.children[1].removeAttribute('disabled', 'disabled')
   el.children[el.children.length - 2].removeAttribute('disabled', 'disabled') 
   el.children[el.children.length - 1].remove()
+  localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
   if (type === 'del') {
     el.remove()
-    console.log('typeFromReturn', type);
     checkQuantityTasks()
   }
 }
@@ -474,11 +437,11 @@ function onReturnhandler({ target }) {
     const isConfirm = confirm(`Задача "${title}" выполнена?`);
     if (!isConfirm) return isConfirm;
     objOfTasks[id].completed = true;
+    localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
     return isConfirm;
   }
 
   function completeTaskFromHtml(confirmed, el) {
-    console.log('el', el);
     if (!confirmed) return;
     el.classList.add('color-green')
     el.lastChild.remove()                                 // удаление кнопки 'Complete'
@@ -486,7 +449,7 @@ function onReturnhandler({ target }) {
     btn.textContent = 'Restore'
     btn.classList.add('btn', 'btn-secondary', 'restore-btn', 'mr-auto')
     el.appendChild(btn)
-    console.log(el);
+    localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
     if (type === 'new') {
       el.remove()
       checkQuantityTasks()
@@ -506,11 +469,11 @@ function onReturnhandler({ target }) {
 
 // Возврат задачи в незавершенные
 function restoreTask(id) {
-  console.log('id', id);
   const { title } = objOfTasks[id];
   const isConfirm = confirm(`Вы уверены, что хотите отменить выполнение задачи "${title}"?`);
   if (!isConfirm) return isConfirm; 
   objOfTasks[id].completed = false;
+  localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
   return isConfirm;
 }
 
@@ -523,6 +486,7 @@ function restoreTaskFromHtml(restored, el) {
   btn.textContent = 'Complete'
   btn.classList.add('btn', 'btn-success', 'mr-auto', 'complete-btn')
   el.appendChild(btn)
+  localStorage.setItem('Tasks', JSON.stringify(objOfTasks))
   if (type === 'compl') {
     el.remove()
     checkQuantityTasks()
@@ -549,7 +513,8 @@ function onRestorehandler({ target }) {
       return;
     }
     setTheme(selectedTheme);
-    lastSelectedTheme = selectedTheme;
+    // lastSelectedTheme = selectedTheme;
+    localStorage.setItem('app_theme', selectedTheme)
   }
 
   function setTheme(name) {
